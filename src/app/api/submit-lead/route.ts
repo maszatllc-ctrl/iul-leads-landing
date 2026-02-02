@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-// Facebook CAPI Configuration
-const FB_PIXEL_ID = '862212346976951';
-const FB_ACCESS_TOKEN = 'EAAF0PjWJSU0BQkefddXh2mhQkZAbqqcIZBw2WIZADbT0Tk05nJweSpTZAxBFTINvmA1KaMH2NuTHKTxZCZBjZApm927rZC6Ti0DnPZBv6fUWqO2Kfm8tXigIIbv4QkktIYkE1FJFaqsZCewVWtDibA1PyJwiRa2yMm5mXXK4eEtsPxgW8uC5jekq30eFXpKqiahrfbJgZDZD';
+// Facebook CAPI Configuration (from environment variables)
+const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || '';
+const FB_ACCESS_TOKEN = process.env.FB_ACCESS_TOKEN || '';
 const FB_API_VERSION = 'v18.0';
 
-// Webhook Configuration (placeholder - replace with your actual webhook URL)
-const WEBHOOK_URL = process.env.WEBHOOK_URL || 'https://your-webhook-url.com/leads';
+// Site URL for CAPI events
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+
+// Webhook Configuration
+const WEBHOOK_URL = process.env.WEBHOOK_URL || '';
 
 // US State lookup by ZIP code (first 3 digits)
 const ZIP_TO_STATE: Record<string, string> = {
@@ -141,6 +144,12 @@ async function sendToFacebookCAPI(leadData: {
   fbc?: string;
   fbp?: string;
 }) {
+  // Skip if FB credentials not configured
+  if (!FB_PIXEL_ID || !FB_ACCESS_TOKEN) {
+    console.log('Facebook CAPI credentials not configured, skipping');
+    return null;
+  }
+
   const eventTime = Math.floor(Date.now() / 1000);
 
   // Parse first and last name
@@ -169,7 +178,7 @@ async function sendToFacebookCAPI(leadData: {
         event_name: 'Lead',
         event_time: eventTime,
         event_id: leadData.eventId,
-        event_source_url: 'https://your-domain.com', // Replace with actual domain
+        event_source_url: SITE_URL,
         action_source: 'website',
         user_data: userData,
         custom_data: {
@@ -203,7 +212,7 @@ async function sendToFacebookCAPI(leadData: {
 
 // Send lead to webhook
 async function sendToWebhook(leadData: Record<string, unknown>) {
-  if (!WEBHOOK_URL || WEBHOOK_URL.includes('your-webhook-url')) {
+  if (!WEBHOOK_URL) {
     console.log('Webhook URL not configured, skipping webhook send');
     console.log('Lead data:', leadData);
     return null;
