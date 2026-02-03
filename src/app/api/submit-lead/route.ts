@@ -12,6 +12,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 // Webhook Configuration
 const WEBHOOK_URL = process.env.WEBHOOK_URL || '';
 
+// Language for leads
+const LANGUAGE = process.env.LANGUAGE || 'es';
+
 // US State lookup by ZIP code (first 3 digits)
 const ZIP_TO_STATE: Record<string, string> = {
   '005': 'NY', '006': 'PR', '007': 'PR', '008': 'PR', '009': 'PR',
@@ -185,7 +188,7 @@ async function sendToFacebookCAPI(leadData: {
           lead_type: 'IUL',
           age_range: leadData.ageRange,
           state: leadData.state,
-          language: 'es',
+          language: LANGUAGE,
         },
       },
     ],
@@ -279,7 +282,7 @@ export async function POST(request: NextRequest) {
       submittedAt,
       eventId,
       source: 'landing_page',
-      language: 'es',
+      language: LANGUAGE,
       pageUrl,
       clientIp,
       clientUserAgent,
