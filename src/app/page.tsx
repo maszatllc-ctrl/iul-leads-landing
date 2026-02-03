@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import MultiStepForm from '@/components/MultiStepForm';
 import {
   ShieldCheckIcon,
@@ -10,7 +10,24 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function Home() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [isSticky, setIsSticky] = useState(true);
+  const ctaSectionRef = useRef<HTMLDivElement>(null);
+
+  // Handle sticky button visibility based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ctaSectionRef.current) {
+        const ctaRect = ctaSectionRef.current.getBoundingClientRect();
+        // Hide sticky when CTA section is visible (with some offset)
+        setIsSticky(ctaRect.top > window.innerHeight - 100);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial state
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const benefits = [
     {
@@ -31,15 +48,19 @@ export default function Home() {
   ];
 
   const trustPoints = [
-    'Sin compromiso',
     'Consulta 100% gratuita',
     'Especialistas bilingües',
   ];
 
+  // Show form full page
+  if (showForm) {
+    return <MultiStepForm onBack={() => setShowForm(false)} />;
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Hero Section */}
-      <section className="relative px-4 pt-12 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-28">
+      <section className="relative px-4 pt-12 pb-32 sm:pb-20 sm:pt-16 lg:pt-20 lg:pb-28">
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
@@ -52,7 +73,7 @@ export default function Home() {
 
           {/* Headline */}
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-6xl">
-            Construye tu Retiro en EE.UU. con{' '}
+            Construye tu Retiro con{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">
               Crecimiento Libre de Impuestos
             </span>
@@ -61,7 +82,7 @@ export default function Home() {
           {/* Subheadline */}
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 sm:text-xl">
             Descubre cómo miles de latinos están protegiendo su futuro financiero con una
-            estrategia que crece sin pagar impuestos federales — y además protege a tu familia.
+            estrategia que crece sin pagar impuestos federales.
           </p>
 
           {/* Trust Points */}
@@ -74,10 +95,10 @@ export default function Home() {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="mt-10">
+          {/* CTA Button - Desktop only (hidden on mobile, shown in sticky) */}
+          <div className="mt-10 hidden sm:block">
             <button
-              onClick={() => setIsFormOpen(true)}
+              onClick={() => setShowForm(true)}
               className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Ver Si Califico
@@ -91,7 +112,7 @@ export default function Home() {
               </svg>
             </button>
             <p className="mt-3 text-sm text-slate-500">
-              Toma menos de 30 segundos • Sin compromiso
+              Toma menos de 30 segundos
             </p>
           </div>
         </div>
@@ -145,17 +166,6 @@ export default function Home() {
               <div className="mt-1 text-sm text-slate-600">Tiempo de respuesta</div>
             </div>
           </div>
-
-          {/* Secondary CTA */}
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="mt-10 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:-translate-y-0.5"
-          >
-            Solicitar Mi Análisis Gratis
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
         </div>
       </section>
 
@@ -182,7 +192,7 @@ export default function Home() {
               },
               {
                 q: '¿Es realmente gratis la consulta?',
-                a: 'Sí, la consulta es 100% gratuita y sin compromiso. Un especialista bilingüe te explicará cómo funciona y si es adecuada para tu situación.',
+                a: 'Sí, la consulta es 100% gratuita. Un especialista bilingüe te explicará cómo funciona y si es adecuada para tu situación.',
               },
             ].map((faq, index) => (
               <div key={index} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200/50">
@@ -194,8 +204,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="px-4 py-16 bg-gradient-to-r from-blue-600 to-blue-700">
+      {/* Final CTA Section - This is the reference point for sticky */}
+      <section ref={ctaSectionRef} className="px-4 py-16 bg-gradient-to-r from-blue-600 to-blue-700">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             ¿Listo para Proteger tu Futuro Financiero?
@@ -203,15 +213,6 @@ export default function Home() {
           <p className="mt-4 text-lg text-blue-100">
             Solicita tu análisis gratuito y descubre cuánto podrías ahorrar en impuestos.
           </p>
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-600 shadow-lg transition-all duration-200 hover:bg-slate-50 hover:-translate-y-0.5"
-          >
-            Comenzar Ahora — Es Gratis
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
         </div>
       </section>
 
@@ -241,8 +242,32 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Multi-Step Form Modal */}
-      <MultiStepForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
+      {/* Sticky CTA Button - Mobile Only */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-40 sm:hidden transition-transform duration-300 ${
+          isSticky ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200 px-4 py-3 shadow-lg">
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/30"
+          >
+            Ver Si Califico
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+          <p className="mt-2 text-center text-xs text-slate-500">
+            Toma menos de 30 segundos
+          </p>
+        </div>
+      </div>
     </main>
   );
 }
