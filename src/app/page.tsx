@@ -8,21 +8,22 @@ import {
   HeartIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
+import { StarIcon } from '@heroicons/react/24/solid';
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [isSticky, setIsSticky] = useState(true);
-  const ctaSectionRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
 
   // Handle sticky button visibility based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      if (ctaSectionRef.current) {
-        const ctaRect = ctaSectionRef.current.getBoundingClientRect();
-        // Hide sticky when bottom of CTA section reaches where the sticky button would be
-        // (approximately 120px from bottom of viewport for the sticky button area)
-        const stickyButtonHeight = 120;
-        setIsSticky(ctaRect.bottom > stickyButtonHeight);
+      if (footerRef.current) {
+        const footerRect = footerRef.current.getBoundingClientRect();
+        // Hide sticky when footer top reaches where the sticky button would be
+        // (approximately 140px from bottom of viewport for the sticky button area)
+        const stickyButtonHeight = 140;
+        setIsSticky(footerRect.top > window.innerHeight - stickyButtonHeight);
       }
     };
 
@@ -62,7 +63,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Hero Section */}
-      <section className="relative px-4 pt-12 pb-8 sm:pb-20 sm:pt-16 lg:pt-20 lg:pb-28">
+      <section className="relative px-4 pt-12 pb-8 sm:pb-12 sm:pt-16 lg:pt-20 lg:pb-12">
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
@@ -87,24 +88,29 @@ export default function Home() {
           </p>
 
           {/* Trust Points */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
             {trustPoints.map((point, index) => (
-              <div key={index} className="flex items-center gap-2 text-sm text-slate-600">
-                <CheckCircleIcon className="h-5 w-5 text-emerald-500" />
-                <span>{point}</span>
+              <div key={index} className="flex items-center gap-2 text-sm sm:text-base text-slate-600">
+                <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-500" />
+                <span className="font-medium">{point}</span>
               </div>
             ))}
           </div>
 
           {/* CTA Button - Desktop only (hidden on mobile, shown in sticky) */}
-          <div className="mt-10 hidden sm:block">
+          <div className="mt-12 sm:mt-16 hidden sm:block">
+            {/* Trust badge */}
+            <div className="flex items-center justify-center gap-1 mb-4">
+              <StarIcon className="h-4 w-4 text-yellow-500" />
+              <span className="text-sm font-medium text-slate-600">10,000+ familias confían en nosotros</span>
+            </div>
             <button
               onClick={() => setShowForm(true)}
-              className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="group relative inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-10 py-5 text-xl font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Ver Si Califico
               <svg
-                className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -112,7 +118,7 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </button>
-            <p className="mt-3 text-sm text-slate-500">
+            <p className="mt-4 text-sm text-slate-500">
               Toma menos de 30 segundos
             </p>
           </div>
@@ -206,8 +212,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA Section - This is the reference point for sticky */}
-      <section ref={ctaSectionRef} className="px-4 py-16 pb-24 sm:pb-16 bg-gradient-to-r from-blue-600 to-blue-700">
+      {/* Final CTA Section */}
+      <section className="px-4 py-16 pb-24 sm:pb-16 bg-gradient-to-r from-blue-600 to-blue-700">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             ¿Listo para Proteger tu Futuro Financiero?
@@ -215,11 +221,36 @@ export default function Home() {
           <p className="mt-4 text-lg text-blue-100">
             Solicita tu análisis gratuito y descubre cuánto podrías ahorrar en impuestos.
           </p>
+          {/* CTA Button - Desktop */}
+          <div className="mt-8 hidden sm:block">
+            {/* Trust badge */}
+            <div className="flex items-center justify-center gap-1 mb-4">
+              <StarIcon className="h-4 w-4 text-yellow-400" />
+              <span className="text-sm font-medium text-blue-100">10,000+ familias confían en nosotros</span>
+            </div>
+            <button
+              onClick={() => setShowForm(true)}
+              className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-700 shadow-lg transition-all duration-200 hover:bg-blue-50 hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
+            >
+              Ver Si Califico
+              <svg
+                className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+            <p className="mt-3 text-sm text-blue-200">
+              Toma menos de 30 segundos
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-8 bg-slate-900">
+      <footer ref={footerRef} className="px-4 py-8 bg-slate-900">
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-col items-center gap-4 text-center text-sm text-slate-400">
             <div className="flex gap-4">
@@ -251,6 +282,11 @@ export default function Home() {
         }`}
       >
         <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200 px-4 py-3 shadow-lg">
+          {/* Trust badge */}
+          <div className="flex items-center justify-center gap-1 mb-2">
+            <StarIcon className="h-4 w-4 text-yellow-500" />
+            <span className="text-xs font-medium text-slate-600">10,000+ familias confían en nosotros</span>
+          </div>
           <button
             onClick={() => setShowForm(true)}
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/30"
