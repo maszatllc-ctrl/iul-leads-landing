@@ -19,8 +19,10 @@ export default function Home() {
     const handleScroll = () => {
       if (ctaSectionRef.current) {
         const ctaRect = ctaSectionRef.current.getBoundingClientRect();
-        // Hide sticky when CTA section is visible (with some offset)
-        setIsSticky(ctaRect.top > window.innerHeight - 100);
+        // Hide sticky when bottom of CTA section reaches where the sticky button would be
+        // (approximately 120px from bottom of viewport for the sticky button area)
+        const stickyButtonHeight = 120;
+        setIsSticky(ctaRect.bottom > stickyButtonHeight);
       }
     };
 
@@ -60,7 +62,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Hero Section */}
-      <section className="relative px-4 pt-12 pb-32 sm:pb-20 sm:pt-16 lg:pt-20 lg:pb-28">
+      <section className="relative px-4 pt-12 pb-8 sm:pb-20 sm:pt-16 lg:pt-20 lg:pb-28">
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
@@ -81,8 +83,7 @@ export default function Home() {
 
           {/* Subheadline */}
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 sm:text-xl">
-            Descubre cómo miles de latinos están protegiendo su futuro financiero con una
-            estrategia que crece sin pagar impuestos federales.
+            Descubre cómo miles de latinos protegen su futuro con crecimiento libre de impuestos
           </p>
 
           {/* Trust Points */}
@@ -119,7 +120,7 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="px-4 py-16 sm:py-20">
+      <section className="px-4 py-12 sm:py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
             La Estrategia que los Americanos Ricos Han Usado por Décadas
@@ -162,8 +163,9 @@ export default function Home() {
               <div className="mt-1 text-sm text-slate-600">Impuestos sobre ganancias</div>
             </div>
             <div className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="text-3xl font-bold text-blue-600">24hrs</div>
-              <div className="mt-1 text-sm text-slate-600">Tiempo de respuesta</div>
+              <div className="text-3xl font-bold text-blue-600">$0</div>
+              <div className="mt-1 text-sm text-slate-600">Riesgo de pérdida</div>
+              <p className="mt-2 text-xs text-slate-500">Tu dinero está protegido durante las caídas del mercado</p>
             </div>
           </div>
         </div>
@@ -205,7 +207,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section - This is the reference point for sticky */}
-      <section ref={ctaSectionRef} className="px-4 py-16 bg-gradient-to-r from-blue-600 to-blue-700">
+      <section ref={ctaSectionRef} className="px-4 py-16 pb-24 sm:pb-16 bg-gradient-to-r from-blue-600 to-blue-700">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             ¿Listo para Proteger tu Futuro Financiero?
