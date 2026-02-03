@@ -133,9 +133,9 @@ export default function Home() {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="group relative rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/50 transition-all duration-200 hover:shadow-md hover:ring-slate-200"
+                className="group relative rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/50 transition-all duration-200 hover:shadow-md hover:ring-slate-200 text-center"
               >
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
+                <div className="mb-4 mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
                   <benefit.icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900">{benefit.title}</h3>
